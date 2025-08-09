@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Start All Services",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "docker-compose",
+            "runtimeArgs": ["up"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "Stop All Services",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "docker-compose",
+            "runtimeArgs": ["down"],
+            "console": "integratedTerminal"
+        }
+    ]
+}

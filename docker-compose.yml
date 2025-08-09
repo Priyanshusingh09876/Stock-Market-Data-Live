@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # Redis for pub/sub messaging
+  redis:
+    image: redis:7-alpine
+    container_name: market-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - market-network
+
+  # PostgreSQL with TimescaleDB for time-series data
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: market-db
+    environment:
+      POSTGRES_DB: marketdata
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - market-network
+
+  # API Gateway - FastAPI application
+  api-gateway:
+    build: ./services/api-gateway
+    container_name: market-api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@timescaledb:5432/marketdata
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+    volumes:
+      - ./services/api-gateway:/app
+    networks:
+      - market-network
+    restart: unless-stopped
+
+  # Market Data Generator - Simulates real-time market data
+  market-generator:
+    build: ./services/market-feed-generator
+    container_name: market-generator
+    environment:
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/market-feed-generator:/app
+    networks:
+      - market-network
+    restart: unless-stopped
+
+networks:
+  market-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

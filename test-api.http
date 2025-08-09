@@ -1,0 +1,20 @@
+### Health Check
+GET http://localhost:8000/health
+
+### API Info
+GET http://localhost:8000/api
+
+### Get Apple Quotes
+GET http://localhost:8000/api/quotes/AAPL
+
+### Get Tesla Trades
+GET http://localhost:8000/api/trades/TSLA
+
+### Get All Symbols
+GET http://localhost:8000/api/symbols
+
+### Get Microsoft Statistics
+GET http://localhost:8000/api/stats/MSFT
+
+### WebSocket Test (open in browser)
+# http://localhost:8000

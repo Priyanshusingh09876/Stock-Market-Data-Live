@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Services",
+            "type": "shell",
+            "command": "docker-compose up -d",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Stop Services",
+            "type": "shell",
+            "command": "docker-compose down",
+            "problemMatcher": []
+        },
+        {
+            "label": "View Logs",
+            "type": "shell",
+            "command": "docker-compose logs -f",
+            "problemMatcher": []
+        },
+        {
+            "label": "Restart Services",
+            "type": "shell",
+            "command": "docker-compose restart",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Services",
+            "type": "shell",
+            "command": "docker-compose build --no-cache",
+            "problemMatcher": []
+        },
+        {
+            "label": "Check Health",
+            "type": "shell",
+            "command": "curl http://localhost:8000/health",
+            "problemMatcher": []
+        }
+    ]
+}
